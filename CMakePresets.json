@@ -1,0 +1,118 @@
+﻿{
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 22,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "conf-common",
+            "hidden": true,
+            "description": "Configure with vcpkg toolchain and generate Ninja project files for all configurations",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "installDir": "${sourceDir}/out/build/${presetName}",
+            "generator": "Ninja Multi-Config",
+            "debug": {
+                "output": true
+            }
+        },
+        {
+            "name": "conf-windows-common",
+            "description": "Windows settings for MSBuild toolchain that apply to msvc and clang",
+            "hidden": true,
+            "inherits": "conf-common",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            },
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },
+            "toolset": {
+                "value": "host=x64",
+                "strategy": "external"
+            }
+        },
+        {
+            "name": "windows-msvc-debug",
+            "displayName": "msvc Debug",
+            "description": "Target Windows with the msvc compiler, debug build type",
+            "hidden": true,
+            "inherits": "conf-windows-common",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "cl",
+                "CMAKE_CXX_COMPILER": "cl",
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "windows-msvc-debug-ccache",
+            "displayName": "msvc Debug (ccache)",
+            "description": "Target Windows with the msvc compiler, debug build type (ccache)",
+            "inherits": "windows-msvc-debug",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER_LAUNCHER": "sccache",
+                "CMAKE_CXX_COMPILER_LAUNCHER": "sccache"
+            }
+        },
+        {
+            "name": "windows-msvc-debug-github",
+            "displayName": "msvc Debug (GitHub)",
+            "description": "Target Windows with the msvc compiler, debug build type (GitHub)",
+            "inherits": [
+                "windows-msvc-debug-ccache"
+            ]
+        },
+        {
+            "name": "windows-msvc-release",
+            "displayName": "msvc Release",
+            "description": "Target Windows with the msvc compiler, release build type",
+            "hidden": true,
+            "inherits": "conf-windows-common",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "cl",
+                "CMAKE_CXX_COMPILER": "cl",
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "windows-msvc-release-ccache",
+            "displayName": "msvc Release (ccache)",
+            "description": "Target Windows with the msvc compiler, release build type (ccache)",
+            "inherits": "windows-msvc-release",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER_LAUNCHER": "sccache",
+                "CMAKE_CXX_COMPILER_LAUNCHER": "sccache"
+            }
+        },
+        {
+            "name": "windows-msvc-release-github",
+            "displayName": "msvc Release (GitHub)",
+            "description": "Target Windows with the msvc compiler, release build type (GitHub)",
+            "inherits": [
+                "windows-msvc-release-ccache"
+            ]
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "windows-msvc-debug-github",
+            "configurePreset": "windows-msvc-debug-github",
+            "displayName": "Build windows-msvc-debug-github",
+            "description": "Build x64 Windows MSVC Debug (GitHub)",
+            "configuration": "Debug",
+            "verbose": true
+        },
+        {
+            "name": "windows-msvc-release-github",
+            "configurePreset": "windows-msvc-release-github",
+            "displayName": "Build windows-msvc-release-github",
+            "description": "Build x64 Windows MSVC Release (GitHub)",
+            "configuration": "Release",
+            "verbose": true
+        }
+    ]
+}
